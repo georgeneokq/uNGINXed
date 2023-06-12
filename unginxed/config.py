@@ -1,10 +1,11 @@
 import crossplane
+from .directive import Directive
 
 class Config:
     def __init__(self, filepath: str):
         self.filepath: str = filepath
         self.raw: dict|None = crossplane.parse(filepath)
-        self.parsed: List[dict] = [] if len(self.raw['config']) == 0 else self.raw['config'][0]['parsed']
+        self.parsed: list[Directive] = [] if len(self.raw['config']) == 0 else self.raw['config'][0]['parsed']
     
 
     def get_raw_config(self) -> dict|None:
@@ -23,12 +24,12 @@ class Config:
         return None
 
 
-    def get_directive_blocks(self, directive: str) -> List[dict]:
+    def get_directive_blocks(self, directive: str) -> list[dict]:
         '''
         Retrieves a list of blocks associated with a directive. Typically arguments and other subdirectives
         '''
-        directive_dict = get_directive(directive)
-        return [] if directive_dict is None else directive_dict['blocks']
+        directive_dict = self.get_directive(directive)
+        return [] if directive_dict is None else directive_dict['block']
 
 
     def __repr__(self) -> str:
