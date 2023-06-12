@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
-from typing import TypedDict
+from typing import TypedDict, Callable, Self
+
 
 class DirectiveDict(TypedDict):
     directive: str
@@ -7,27 +8,40 @@ class DirectiveDict(TypedDict):
     args: list[str]
     block: list[dict]
 
+
 @dataclass
 class Directive:
-    directive: str
-    line: int
+    directive: str = None
+    line: int = None
     args: list[str] = field(default_factory=list)
-    block: list[dict] = field(default_factory=list)
+    block: list[Self] = field(default_factory=list)
 
-    def get_directives(self, directive_name, recursive=True):
-        def recursive_get_directives(current_directive: Directive, directives_list=[]):
-            for directive_dict in current_directive.block:
-                directive = Directive.from_dict(directive_dict)
-                if directive_name == directive_dict["directive"]:
-                    directives_list.append(directive)
-                recursive_get_directives(directive, directives_list)
 
-            return directives_list
+class DirectiveUtil:
+    @staticmethod
+    def traverse(directives: list[Directive],
+                 callback: Callable[[Directive, Directive], None]) -> None:
+        """
+        Given a list of directives, recursively traverse through the
+        tree of directives and performs a callback on each directive.
 
-        directives = recursive_get_directives(self)
-
-        return directives
+        params:
+            directives: top-level list of directives
+            callback(current_directive, parent_directive): Operation to perform
+        """
+        directive: Directive
+        for directive in directives:
+            callback(directive)
+            DirectiveUtil.traverse(directive.block, callback)
 
     @staticmethod
-    def from_dict(dict: DirectiveDict):
-        return Directive(dict["directive"], dict["line"], dict.get("args", []), dict.get("block", []))
+    def get_directives(directive_name: str, directives: list[Directive]):
+        retrieved_directives: list[Directive] = []
+
+        def traversal_callback(directive: Directive):
+            if directive.directive == directive_name:
+                retrieved_directives.append(directive)
+
+        DirectiveUtil.traverse(directives, traversal_callback)
+
+        return retrieved_directives

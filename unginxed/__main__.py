@@ -1,8 +1,9 @@
 from .sigs.alias_lfi import matcher
-from .config import Config
+from .nginx_config import NginxConfig
+
 
 def main():
-    config = Config("examples/default.conf")
+    config = NginxConfig("examples/default.conf")
     signature_result = matcher(config.parsed)
     print(signature_result)
 
