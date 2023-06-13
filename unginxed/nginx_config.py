@@ -1,5 +1,5 @@
 import crossplane
-from .directive import Directive, DirectiveDict
+from .directive import Directive, DirectiveDict, DirectiveUtil
 from typing import Callable
 
 
@@ -14,7 +14,10 @@ class NginxConfig:
         for directive_dict in config:
             directive = Directive()
             self.parsed.append(directive)
-            recursive_initialize_directives(directive, directive_dict)
+            DirectiveUtil.recursive_initialize_directives(
+                directive,
+                directive_dict
+            )
 
     def get_raw_config(self) -> dict | None:
         return None if self.raw is None else self.raw['config'][0]
@@ -61,14 +64,3 @@ class ConfigUtil:
             )
 
 
-def recursive_initialize_directives(directive: Directive, directive_dict: DirectiveDict):
-    directive.directive = directive_dict["directive"]
-    directive.line = directive_dict["line"]
-    directive.args = directive_dict["args"]
-    directive.block = []
-
-    if directive_dict.get("block") is not None:
-        for sub_directive_dict in directive_dict.get("block"):
-            sub_directive = Directive()
-            recursive_initialize_directives(sub_directive, sub_directive_dict)
-            directive.block.append(sub_directive)

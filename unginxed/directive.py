@@ -53,3 +53,20 @@ class DirectiveUtil:
         DirectiveUtil.traverse(directives, traversal_callback)
 
         return retrieved_directives
+
+    @staticmethod
+    def recursive_initialize_directives(directive: Directive,
+                                        directive_dict: DirectiveDict) -> None:
+        directive.directive = directive_dict["directive"]
+        directive.line = directive_dict["line"]
+        directive.args = directive_dict["args"]
+        directive.block = []
+
+        if directive_dict.get("block") is not None:
+            for sub_directive_dict in directive_dict.get("block"):
+                sub_directive = Directive()
+                DirectiveUtil.recursive_initialize_directives(
+                    sub_directive,
+                    sub_directive_dict
+                )
+                directive.block.append(sub_directive)
