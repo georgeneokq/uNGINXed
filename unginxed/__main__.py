@@ -3,10 +3,16 @@ from os import listdir, path
 from typing import Callable
 from .nginx_config import NginxConfig
 from .directive import Directive
+import argparse as ap
 
 
 def main():
-    config = NginxConfig(path.join(__file__, '..', '..', 'examples', 'default.conf'))
+    argument_parser = ap.ArgumentParser()
+    argument_parser.add_argument('file', type=str, help="Path to NGINX configuration file")
+    args = argument_parser.parse_args()
+    filepath = args.file
+
+    config = NginxConfig(filepath)
     directives = config.directives
     signatures = get_signatures()
 
