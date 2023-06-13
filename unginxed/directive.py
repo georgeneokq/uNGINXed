@@ -3,7 +3,8 @@ from typing import TypedDict, Callable, Self
 
 
 class DirectiveDict(TypedDict):
-    """TypedDict for type hinting a dictionary that represents
+    """
+    TypedDict for type hinting a dictionary that represents
     a directive, retrieved from crossplane library
     """
     directive: str
@@ -14,7 +15,8 @@ class DirectiveDict(TypedDict):
 
 @dataclass
 class Directive:
-    """Data class that represents a directive
+    """
+    Data class that represents a directive
     """
     directive: str = None
     line: int = None
@@ -23,6 +25,9 @@ class Directive:
 
 
 class DirectiveUtil:
+    """
+    Utility class for handling Directive objects
+    """
     @staticmethod
     def traverse(directives: list[Directive],
                  callback: Callable[[Directive], None]) -> None:
