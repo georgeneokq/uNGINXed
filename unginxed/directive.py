@@ -20,22 +20,30 @@ class Directive:
 class DirectiveUtil:
     @staticmethod
     def traverse(directives: list[Directive],
-                 callback: Callable[[Directive, Directive], None]) -> None:
+                 callback: Callable[[Directive], None]) -> None:
         """
         Given a list of directives, recursively traverse through the
         tree of directives and performs a callback on each directive.
 
         params:
-            directives: top-level list of directives
-            callback(current_directive, parent_directive): Operation to perform
+            directives: list of Directives objects
+            callback(directive): Operation to perform
         """
-        directive: Directive
         for directive in directives:
             callback(directive)
             DirectiveUtil.traverse(directive.block, callback)
 
     @staticmethod
-    def get_directives(directive_name: str, directives: list[Directive]):
+    def get_directives(directive_name: str,
+                       directives: list[Directive]) -> None:
+        """
+        Given a list of Directives objects and a directive name, retrieve all
+        Directive objects with the given name.
+
+        params:
+            directive_name: directive name to search for
+            directives: list of directives to search through
+        """
         retrieved_directives: list[Directive] = []
 
         def traversal_callback(directive: Directive):

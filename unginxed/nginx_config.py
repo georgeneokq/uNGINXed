@@ -7,7 +7,7 @@ class NginxConfig:
     def __init__(self, filepath: str):
         self.filepath: str = filepath
         self.raw: dict | None = crossplane.parse(filepath)
-        self.parsed = []
+        self.parsed: list[Directive] = []
 
         config: list[DirectiveDict] = self.raw["config"][0]["parsed"]
 
