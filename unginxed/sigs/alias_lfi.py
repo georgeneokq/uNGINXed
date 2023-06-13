@@ -13,6 +13,7 @@ def matcher(directives: list[Directive]) -> SignatureResult:
         for directive in blocks:
             if directive.directive == 'alias' and not location_directive.directive.endswith('/'):
                 signature_result.lines.append(location_directive.line)
-                signature_result.directives.append(f'{location_directive.directive} {" ".join(location_directive.args)}')
+                signature_result.directives.append(
+                    f'{location_directive.directive} {" ".join(location_directive.args)}')
 
     return signature_result

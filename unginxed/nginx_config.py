@@ -8,7 +8,7 @@ class NginxConfig:
         self.filepath: str = filepath
         self.raw: dict | None = crossplane.parse(filepath)
         self.parsed = []
-        
+
         config: list[DirectiveDict] = self.raw["config"][0]["parsed"]
 
         for directive_dict in config:
@@ -66,7 +66,7 @@ def recursive_initialize_directives(directive: Directive, directive_dict: Direct
     directive.line = directive_dict["line"]
     directive.args = directive_dict["args"]
     directive.block = []
-    
+
     if directive_dict.get("block") is not None:
         for sub_directive_dict in directive_dict.get("block"):
             sub_directive = Directive()
