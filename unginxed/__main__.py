@@ -1,9 +1,11 @@
 from importlib import import_module
 from os import listdir, path
 from typing import Callable
+import argparse as ap
+import json
+import dataclasses
 from .nginx_config import NginxConfig
 from .directive import Directive
-import argparse as ap
 
 
 def main():
@@ -17,7 +19,9 @@ def main():
     signatures = get_signatures()
 
     results = [signature(directives) for signature in signatures]
-    print(results)
+    
+    json_results = json.dumps([dataclasses.asdict(result) for result in results])
+    print(json_results)
 
 
 def get_signatures(signatures_folder=None) -> list[Callable[[list[Directive]], None]]:
