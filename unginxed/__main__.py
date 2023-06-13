@@ -4,7 +4,7 @@ from .nginx_config import NginxConfig
 
 def main():
     config = NginxConfig("examples/default.conf")
-    signature_result = matcher(config.parsed)
+    signature_result = matcher(config.directives)
     print(signature_result)
 
 
