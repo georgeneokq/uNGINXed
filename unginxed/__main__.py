@@ -4,7 +4,7 @@ from typing import Callable
 import argparse as ap
 import json
 import dataclasses
-from .nginx_config import NginxConfig
+from .nginx_config import NginxConfig, NginxConfigUtil
 from .directive import Directive
 
 
@@ -15,12 +15,12 @@ def main():
     filepath = args.file
 
     config = NginxConfig(filepath)
-    directives = config.directives
     signatures = get_signatures()
 
-    results = [signature(directives) for signature in signatures]
+    results = [signature(config) for signature in signatures]
     
     json_results = json.dumps([dataclasses.asdict(result) for result in results])
+
     print(json_results)
 
 

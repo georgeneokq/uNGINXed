@@ -1,10 +1,16 @@
 from dataclasses import dataclass
+from typing import TypedDict
 
 
-# In report generation, highlight the line number and also show the directive
+class Flagged(TypedDict):
+    line: int
+    column_start: int
+    column_end: int
+    directive: str
+
+
 @dataclass
 class SignatureResult:
-    lines: list[int]
-    directives: list[str]
+    flagged: list[Flagged]
     reference: str
     additional_description: str

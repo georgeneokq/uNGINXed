@@ -45,7 +45,7 @@ class DirectiveUtil:
 
     @staticmethod
     def get_directives(directive_name: str,
-                       directives: list[Directive]) -> None:
+                       directives: list[Directive]) -> list[Directive]:
         """
         Given a list of Directives objects and a directive name, retrieve all
         Directive objects with the given name.
@@ -53,6 +53,9 @@ class DirectiveUtil:
         Args:
             directive_name (str): Directive name to search for
             directives (list[Directive]): List of directives to search through
+
+        Returns:
+            List of directives
         """
         retrieved_directives: list[Directive] = []
 
