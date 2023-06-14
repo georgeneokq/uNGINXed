@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import TypedDict, Callable, Self
+from typing import Callable, Self, TypedDict
 
 
 class DirectiveDict(TypedDict):

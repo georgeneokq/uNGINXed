@@ -1,11 +1,13 @@
+import argparse as ap
+import dataclasses
+import json
 from importlib import import_module
 from os import listdir, path
+from pathlib import Path
 from typing import Callable
-import argparse as ap
-import json
-import dataclasses
-from .nginx_config import NginxConfig, NginxConfigUtil
+
 from .directive import Directive
+from .nginx_config import NginxConfig
 
 
 def main():
@@ -40,7 +42,7 @@ def get_signatures(signatures_folder=None) -> list[Callable[[list[Directive]], N
     signatures = []
 
     if signatures_folder is None:
-        signatures_folder = path.join(__file__, '..', 'sigs')
+        signatures_folder = path.join(Path(__file__).parent, 'sigs')
 
     filenames = list(filter(
         lambda filename: filename.endswith('.py') and not filename.endswith('__'),
@@ -55,7 +57,7 @@ def get_signatures(signatures_folder=None) -> list[Callable[[list[Directive]], N
             )
             signatures.append(signature.matcher)
         except Exception:
-            pass
+            print(f'Unknown error loading signature from {path.join(signatures_folder, filename)}')
 
     return signatures
 

@@ -1,7 +1,9 @@
-import crossplane
-from os import path
 import re
+from os import path
 from typing import Optional
+
+import crossplane
+
 from .directive import Directive, DirectiveDict, DirectiveUtil
 
 
@@ -45,7 +47,7 @@ class NginxConfig:
 
 class NginxConfigUtil:
     @staticmethod
-    def get_directive_position(config: NginxConfig,
+    def get_directive_position(config: str,
                                directive: str,
                                line_number: Optional[int]) -> tuple[int, int]:
         """
@@ -56,7 +58,7 @@ class NginxConfigUtil:
         directive in a configuration file.
 
         Args:
-            config (NginxConfig): NginxConfig object
+            config (str): Raw config file contents
             directive (str): Directive and its arguments
             line_number (int): Line number. If not given or not found
                                on first try, the entire file will be
@@ -73,7 +75,7 @@ class NginxConfigUtil:
         pattern = '\\s+'.join(args)
 
         # Given a line number, jump to that line in the directive and search
-        lines = config.raw.splitlines()
+        lines = config.splitlines()
         if line_number:
             line = lines[line_number - 1]
             match = re.search(pattern, line)
