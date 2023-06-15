@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 crossplane = "^0.5.8"
+xhtml2pdf = "^0.2.11"
 
 
 [tool.poetry.group.dev.dependencies]

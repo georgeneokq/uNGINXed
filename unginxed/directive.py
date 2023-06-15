@@ -44,6 +44,21 @@ class DirectiveUtil:
             DirectiveUtil.traverse(directive.block, callback)
 
     @staticmethod
+    def get_directives_set(directives: list[Directive]) -> set[str]:
+        """
+        Get a full unique set of directive names
+
+        Args:
+            directives (list[Directive]): List of directives to retrieve from
+
+        Returns:
+            set[str]
+        """
+        directive_set = set()
+        DirectiveUtil.traverse(directives, lambda directive: directive_set.add(directive.directive))
+        return directive_set
+
+    @staticmethod
     def get_directives(directive_name: str,
                        directives: list[Directive]) -> list[Directive]:
         """

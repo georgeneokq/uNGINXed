@@ -1,5 +1,6 @@
 import re
 from os import path
+from pathlib import Path
 from typing import Optional
 
 import crossplane
@@ -25,6 +26,7 @@ class NginxConfig:
             raise IOError(f'Invalid file path "{filepath}" provided.')
         
         self.filepath: str = filepath
+        self.filename: str = Path(filepath).stem
 
         with open(filepath) as f:
             self.raw: str = f.read()

@@ -3,6 +3,7 @@ import dataclasses
 import json
 from .nginx_config import NginxConfig
 from .signature import get_signatures
+from .report import generate_pdf_report
 
 
 def main():
@@ -15,9 +16,9 @@ def main():
     signatures = get_signatures()
 
     results = [signature(config) for signature in signatures] 
-    json_results = json.dumps([dataclasses.asdict(result) for result in results])
 
-    print(json_results)
+    report_path = generate_pdf_report(config, results)
+    print(f'Generated report at {report_path}')
 
 
 if __name__ == "__main__":
