@@ -1,5 +1,8 @@
+from importlib import import_module
+from os import listdir, path
 from dataclasses import dataclass
-from typing import Optional, Self, TypedDict
+from pathlib import Path
+from typing import Callable, Optional, Self, TypedDict
 
 from .directive import Directive
 from .nginx_config import NginxConfigUtil
@@ -90,3 +93,39 @@ class SignatureBuilder:
     def set_description(self, description: str):
         self.signature.description = description
         return self
+
+
+def get_signatures(signatures_folder=None) -> list[Callable[[list[Directive]], None]]:
+    """
+    Retrieves a list of signatures.
+    Each signature should be a python file in the specified signatures folder,
+    containing a function named "matcher". Each matcher function takes in
+    a list of Directive objects as a parameter.
+
+    Args:
+        signatures_folder: If not provided, defaults to 'sigs' folder.
+
+    Returns:
+        list[Callable[[list[Directive]], None]]: _description_
+    """
+    signatures = []
+
+    if signatures_folder is None:
+        signatures_folder = path.join(Path(__file__).parent, 'sigs')
+
+    filenames = list(filter(
+        lambda filename: filename.endswith('.py') and not filename.endswith('__'),
+        listdir(signatures_folder))
+    )
+
+    for filename in filenames:
+        try:
+            signature = import_module(
+                f'.sigs.{filename.rstrip(".py")}',
+                package=__package__
+            )
+            signatures.append(signature.matcher)
+        except Exception:
+            print(f'Unknown error loading signature from {path.join(signatures_folder, filename)}')
+
+    return signatures
