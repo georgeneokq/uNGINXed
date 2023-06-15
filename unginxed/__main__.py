@@ -1,9 +1,8 @@
 import argparse as ap
-import dataclasses
-import json
+
 from .nginx_config import NginxConfig
-from .signature import get_signatures
 from .report import generate_pdf_report
+from .signature import get_signatures
 
 
 def main():

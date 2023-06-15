@@ -1,6 +1,6 @@
+from dataclasses import dataclass
 from importlib import import_module
 from os import listdir, path
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Optional, Self, TypedDict
 

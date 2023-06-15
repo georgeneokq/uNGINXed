@@ -1,12 +1,14 @@
-from .signature import Signature
-from .nginx_config import NginxConfig
-from .directive import DirectiveUtil
-from xhtml2pdf import pisa
+import re
+from base64 import b64encode
 from datetime import datetime
 from os import path
-import re
 from pathlib import Path
-from base64 import b64encode
+
+from xhtml2pdf import pisa
+
+from .directive import DirectiveUtil
+from .nginx_config import NginxConfig
+from .signature import Signature
 
 
 def _generate_xhtml(config: NginxConfig, signature_results: list[Signature]):
