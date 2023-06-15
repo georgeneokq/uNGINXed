@@ -14,9 +14,10 @@ def main():
     config = NginxConfig(filepath)
     signatures = get_signatures()
 
-    results = [signature(config) for signature in signatures] 
+    results = [signature(config) for signature in signatures]
 
     report_path = generate_pdf_report(config, results)
+
     print(f'Generated report at {report_path}')
 
 

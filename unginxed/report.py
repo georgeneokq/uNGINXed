@@ -81,6 +81,28 @@ def _generate_xhtml(config: NginxConfig, signature_results: list[Signature]):
     .table-anchor {
         display: inline-block;
     }
+
+    .line-number {
+        text-align: right;
+        font-style: italic;
+        color: gray;
+        margin-right: 15px;
+        width: 1%;
+    }
+
+    .config-content {
+        text-align: left;
+        white-space: pre;
+    }
+
+    .config-overview-table {
+        display: block;
+        width: 100%;
+    }
+
+    .config-overview-table tbody {
+        background-color: blue;
+    }
 </style>
     """.strip()
 
@@ -104,7 +126,25 @@ def _generate_xhtml(config: NginxConfig, signature_results: list[Signature]):
     with open(path.join(Path(__file__).parent, 'static', 'img', 'nginx.png'), 'rb') as f:
         cover_page_logo_url = f'data:image/png;base64,{b64encode(f.read()).decode()}'
 
-    body = '''
+    configuration_overview = ''.join([f'<tr><td class="line-number">{index + 1}</td><td class="config-content">{line}</td></tr>\n' for index, line in enumerate(lines)])
+
+    # Color for curly braces
+    configuration_overview = re.sub(r'([\{\}])', r'<span class="curly-brace">\g<1></span>', configuration_overview)
+
+    # Color for comments
+    # NOTE: Currently assumes # always indicates the start of a comment.
+    #        If # is used in href during ereprocessing, the report will break
+    configuration_overview = re.sub(r'(#.*$)', r'<span class="comment">\g<1></span>', configuration_overview, 0, re.MULTILINE)
+
+    directives_set = DirectiveUtil.get_directives_set(config.directives)
+
+    directives_list = list(directives_set)
+
+    # Form a regex pattern with the unique list of directives
+    directives_pattern = rf'^(\d+\s*)({"|".join(directives_list)})([^a-zA-Z\n])'
+    configuration_overview = re.sub(directives_pattern, r'\g<1><span class="directive">\g<2>\g<3></span>', configuration_overview, 0, re.MULTILINE)
+
+    html_to_pdf_content = '''
 <body>
     <div id="footer_content" align="right">Page
     <pdf:pagenumber/>
@@ -148,8 +188,13 @@ def _generate_xhtml(config: NginxConfig, signature_results: list[Signature]):
 
     <div>
         <h1 class="header">Configuration Overview</h1>
-        <pre>\n{}</pre>
+        <table class="config-overview-table">
+            <tbody>
+                {}
+            </tbody>
+        </table>
     </div>
+
 </body>
     '''.format(
         cover_page_logo_url,
@@ -162,26 +207,10 @@ def _generate_xhtml(config: NginxConfig, signature_results: list[Signature]):
                         (', '.join([str(flagged["line"]) for flagged in signature.flagged]))
                         ) for signature in signature_results
             ]),                                    # Display signature table
-        ''.join([f'{line}\n' for line in lines]),  # Display config
-        ).strip()
+        configuration_overview
+    ).strip()
 
-    # Color for curly braces
-    body = re.sub(r'([\{\}])', r'<span class="curly-brace">\g<1></span>', body)
-
-    # Color for comments
-    # NOTE: Currently assumes # always indicates the start of a comment.
-    #        If # is used in href during preprocessing, the report will break
-    body = re.sub(r'(#.*$)', r'<span class="comment">\g<1></span>', body, 0, re.MULTILINE)
-
-    directives_set = DirectiveUtil.get_directives_set(config.directives)
-
-    directives_list = list(directives_set)
-
-    # Form a regex pattern with the unique list of directives
-    directives_pattern = rf'^(\s*)({"|".join(directives_list)})([^a-zA-Z\n])'
-    body = re.sub(directives_pattern, r'\g<1><span class="directive">\g<2>\g<3></span>', body, 0, re.MULTILINE)
-
-    return ''.join([styles, body])
+    return ''.join([styles, html_to_pdf_content])
 
 
 def generate_pdf_report(config: NginxConfig, signature_results: list[Signature], output_folder='reports') -> str:
