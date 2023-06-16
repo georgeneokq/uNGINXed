@@ -23,6 +23,9 @@ class Directive:
     args: list[str] = field(default_factory=list)
     block: list[Self] = field(default_factory=list)
 
+    def get_full_directive(self):
+        return ' '.join([self.directive, *self.args])
+
 
 class DirectiveUtil:
     """
