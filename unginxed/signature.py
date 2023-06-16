@@ -95,6 +95,46 @@ class SignatureBuilder:
         return self
 
 
+class SignatureUtil:
+    @staticmethod
+    def get_line_to_signature_mapping(signatures: list[Signature]) -> dict[int, Signature]:
+        """
+        Get a dictionary which maps line numbers to Flagged dicts.
+
+        Args:
+            signatures (list[Signature]): Signatures to create mapping for
+
+        Returns:
+            dict[int, Flagged]: Line-to-Flagged mapping
+        """
+        mapping: dict[int, Signature] = {}
+
+        for signature in signatures:
+            for flagged in signature.flagged:
+                mapping[flagged["line"]] = signature
+
+        return mapping
+
+    @staticmethod
+    def get_line_to_flagged_mapping(signatures: list[Signature]) -> dict[int, Flagged]:
+        """
+        Get a dictionary which maps line numbers to Flagged dicts.
+
+        Args:
+            signatures (list[Signature]): Signatures to create mapping for
+
+        Returns:
+            dict[int, Flagged]: Line-to-Flagged mapping
+        """
+        mapping: dict[int, Signature] = {}
+
+        for signature in signatures:
+            for flagged in signature.flagged:
+                mapping[flagged["line"]] = flagged
+
+        return mapping
+
+
 def get_signatures(signatures_folder=None) -> list[Callable[[list[Directive]], Signature]]:
     """
     Retrieves a list of signatures.

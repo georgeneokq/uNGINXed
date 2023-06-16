@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>uNGINXed report</title>
+        <style>
+            {{pdf_styles}}
+
+            /* Control TOC start */
+
+            h1, h2, h3, h4, h5, h6 {
+                -pdf-outline: false;
+            }
+
+            .generate-toc {
+                -pdf-outline: true;
+            }
+
+            /* Control TOC end */
+
+            /* General element styling start */
+
+            body, pre {
+                font-family: Arial;
+                font-size: 14px;
+            }
+
+            /* General element styling end */
+
+            /* Common classes start */
+
+            .center {
+                text-align: center;
+            }
+
+            .inline-block {
+                display: inline-block;
+            }
+
+            /* Hacky way to put hidden content on the page. Only fully works if background is white. */
+            .hidden {
+                font-size: 0;
+                line-height: 0;
+                color: white;
+            }
+
+            .center {
+                text-align: center;
+            }
+
+            /* Put this on elements with content to draw a page-wide horizontal line */
+            .separator {
+                border-bottom-width: 1px;
+                border-bottom-color: black;
+                border-bottom-style: solid;
+            }
+            
+            /* Common classes end */
+            
+            /* Context-specific class start */
+
+            .cover-title {
+                font-size: 40px;
+                font-weight: 700;
+            }
+
+            .cover-sub-title {
+                font-size: 28px;
+                font-weight: 500;
+            }
+
+            .section-info {
+                font-size: 12px;
+            }
+
+            .curly-brace {
+                color: #deaa1d;
+            }
+
+            .comment {
+                color: #109e48;
+            }
+
+            .directive {
+                color: blue;
+            }
+
+            .flagged {
+                color: #e80514;
+                text-decoration: underline;
+            }
+
+            .line-number {
+                text-align: right;
+                font-style: italic;
+                color: gray;
+                margin-right: 15px;
+                width: 1%;
+            }
+
+            .config-content {
+                white-space: pre;
+            }
+
+            .config-overview-table {
+                display: block;
+                width: 100%;
+            }
+
+            .config-overview-table tbody {
+                background-color: blue;
+            }
+
+            /* Context-specific class end */
+        </style>
+    </head>
+    <body>
+        <div id="footer_content" align="right">Page
+        <pdf:pagenumber/>
+        of
+        <pdf:pagecount />
+        </div>
+
+        <div class="center">
+            <!-- For TOC gneration only -->
+            <h1 class="hidden generate-toc">Cover page</h1>
+
+            <h1 class="cover-title">uNGINXed</h1>
+            <img src="{{logo_url}}" alt="NGINX" width="200" height="200" />
+            <p class="cover-sub-title">Misconfiguration Report</p>
+        </div>
+
+        <pdf:nextpage />
+
+        <div>
+            <div class="separator">
+                <h1 class="center generate-toc">Table Of Contents</h1>
+            </div>
+            <pdf:toc />
+        </div>
+
+        <pdf:nextpage />
+
+        <div>
+            <div class="separator">
+                <h1 class="center generate-toc">Signatures</h1>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Reference</th>
+                        <th>Lines</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for signature in signatures %}
+                    <tr>
+                        <td class="center">{{signature.name}}</td>
+                        <td class="center">{{signature.description}}</td>
+                        <td class="center"><a class="inline-block" href="{{signature.reference_url}}">Read More</a></td>
+                        <td class="center">{{signature.flagged | map(attribute='line') | join(', ')}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <pdf:nextpage />
+
+        <div>
+            <!-- For whatever reason, this produces two lines instead of one -->
+            <div>
+                <h1 class="center generate-toc">Configuration Overview</h1>
+                <p class="separator section-info">
+                    Directives underlined in red have been flagged out by uNGINXed.
+                    <br>
+                    Clicking on those directives link to a webpage where you can read more about the misconfiguration.
+                </p>
+            </div>
+
+            <table class="config-overview-table">
+                <tbody>
+                    {% for line in config.raw.splitlines() %}
+                    <!-- Do coloring next -->
+                    <tr>
+                        <td class="line-number">{{loop.index}}</td>
+                        <td class="config-content">{{process_config_line(line, loop.index) | safe}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
