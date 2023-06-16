@@ -6,6 +6,8 @@
         <style>
             {{pdf_styles}}
 
+            /* Control TOC start */
+
             h1, h2, h3, h4, h5, h6 {
                 -pdf-outline: false;
             }
@@ -14,10 +16,48 @@
                 -pdf-outline: true;
             }
 
+            /* Control TOC end */
+
+            /* General element styling start */
+
             body, pre {
                 font-family: Arial;
                 font-size: 14px;
             }
+
+            /* General element styling end */
+
+            /* Common classes start */
+
+            .center {
+                text-align: center;
+            }
+
+            .inline-block {
+                display: inline-block;
+            }
+
+            /* Hacky way to put hidden content on the page. Only fully works if background is white. */
+            .hidden {
+                font-size: 0;
+                line-height: 0;
+                color: white;
+            }
+
+            .center {
+                text-align: center;
+            }
+
+            /* Put this on elements with content to draw a page-wide horizontal line */
+            .separator {
+                border-bottom-width: 1px;
+                border-bottom-color: black;
+                border-bottom-style: solid;
+            }
+            
+            /* Common classes end */
+            
+            /* Context-specific class start */
 
             .cover-title {
                 font-size: 40px;
@@ -29,22 +69,8 @@
                 font-weight: 500;
             }
 
-            .center {
-                text-align: center;
-            }
-
-            /* Hacky way to put hidden content on the page. Only fully works if background is white. */
-            .hidden {
-                font-size: 0;
-                line-height: 0;
-                color: white;
-            }
-
-            .header {
-                text-align: center;
-                border-bottom-width: 1px;
-                border-bottom-color: black;
-                border-bottom-style: solid;
+            .section-info {
+                font-size: 12px;
             }
 
             .curly-brace {
@@ -64,15 +90,6 @@
                 text-decoration: underline;
             }
 
-            td {
-                text-align: center;
-                word-wrap: break-word;
-            }
-
-            .table-anchor {
-                display: inline-block;
-            }
-
             .line-number {
                 text-align: right;
                 font-style: italic;
@@ -82,7 +99,6 @@
             }
 
             .config-content {
-                text-align: left;
                 white-space: pre;
             }
 
@@ -94,6 +110,8 @@
             .config-overview-table tbody {
                 background-color: blue;
             }
+
+            /* Context-specific class end */
         </style>
     </head>
     <body>
@@ -115,14 +133,18 @@
         <pdf:nextpage />
 
         <div>
-            <h1 class="header generate-toc">Table Of Contents</h1>
+            <div class="separator">
+                <h1 class="center generate-toc">Table Of Contents</h1>
+            </div>
             <pdf:toc />
         </div>
 
         <pdf:nextpage />
 
         <div>
-            <h1 class="header generate-toc">Signatures</h1>
+            <div class="separator">
+                <h1 class="center generate-toc">Signatures</h1>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -135,10 +157,10 @@
                 <tbody>
                     {% for signature in signatures %}
                     <tr>
-                        <td>{{signature.name}}</td>
-                        <td>{{signature.description}}</td>
-                        <td><a class="table-anchor" href="{{signature.reference_url}}">Read More</a></td>
-                        <td>{{signature.flagged | map(attribute='line') | join(', ')}}</td>
+                        <td class="center">{{signature.name}}</td>
+                        <td class="center">{{signature.description}}</td>
+                        <td class="center"><a class="inline-block" href="{{signature.reference_url}}">Read More</a></td>
+                        <td class="center">{{signature.flagged | map(attribute='line') | join(', ')}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -148,7 +170,16 @@
         <pdf:nextpage />
 
         <div>
-            <h1 class="header generate-toc">Configuration Overview</h1>
+            <!-- For whatever reason, this produces two lines instead of one -->
+            <div>
+                <h1 class="center generate-toc">Configuration Overview</h1>
+                <p class="separator section-info">
+                    Directives underlined in red have been flagged out by uNGINXed.
+                    <br>
+                    Clicking on those directives link to a webpage where you can read more about the misconfiguration.
+                </p>
+            </div>
+
             <table class="config-overview-table">
                 <tbody>
                     {% for line in config.raw.splitlines() %}
