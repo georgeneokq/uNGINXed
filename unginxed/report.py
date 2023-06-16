@@ -113,6 +113,9 @@ def _generate_xhtml(config: NginxConfig, signature_results: list[Signature]):
         for flagged in signature.flagged:
             flagged_directive = flagged["directive"]
 
+            # escape uri special characters
+            flagged_directive = flagged_directive.replace('/', '\/').replace('.', '\.').replace('?', '\?').replace('$', '\$')
+            
             # NOTE: Might pose a problem if the directive contains chars with special meaning
             pattern = '({})'.format(r'\s+'.join(flagged_directive.split(' ')))
 

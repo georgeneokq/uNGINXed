@@ -70,6 +70,9 @@ class NginxConfigUtil:
         Returns:
             tuple[int, int]: Start and end index of the directive, one-indexed
         """
+        # escape uri special characters
+        directive = directive.replace('/', '\/').replace('.', '\.').replace('?', '\?').replace('$', '\$')
+        
         # Split the directive and arguments by spaces
         args = directive.split(' ')
 
