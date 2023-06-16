@@ -6,6 +6,14 @@
         <style>
             {{pdf_styles}}
 
+            h1, h2, h3, h4, h5, h6 {
+                -pdf-outline: false;
+            }
+
+            .generate-toc {
+                -pdf-outline: true;
+            }
+
             body, pre {
                 font-family: Arial;
                 font-size: 14px;
@@ -23,6 +31,13 @@
 
             .center {
                 text-align: center;
+            }
+
+            /* Hacky way to put hidden content on the page. Only fully works if background is white. */
+            .hidden {
+                font-size: 0;
+                line-height: 0;
+                color: white;
             }
 
             .header {
@@ -89,6 +104,9 @@
         </div>
 
         <div class="center">
+            <!-- For TOC gneration only -->
+            <h1 class="hidden generate-toc">Cover page</h1>
+
             <h1 class="cover-title">uNGINXed</h1>
             <img src="{{logo_url}}" alt="NGINX" width="200" height="200" />
             <p class="cover-sub-title">Misconfiguration Report</p>
@@ -97,14 +115,14 @@
         <pdf:nextpage />
 
         <div>
-            <h1 class="header">Table Of Contents</h1>
+            <h1 class="header generate-toc">Table Of Contents</h1>
             <pdf:toc />
         </div>
 
         <pdf:nextpage />
 
         <div>
-            <h1 class="header">Signatures</h1>
+            <h1 class="header generate-toc">Signatures</h1>
             <table>
                 <thead>
                     <tr>
@@ -130,7 +148,7 @@
         <pdf:nextpage />
 
         <div>
-            <h1 class="header">Configuration Overview</h1>
+            <h1 class="header generate-toc">Configuration Overview</h1>
             <table class="config-overview-table">
                 <tbody>
                     {% for line in config.raw.splitlines() %}
