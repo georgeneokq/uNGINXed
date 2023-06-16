@@ -15,7 +15,6 @@ def matcher(config: NginxConfig) -> Signature:
 
         for directive in blocks:
             if directive.directive == 'alias' and not location_directive.get_full_directive().endswith('/'):
-                print(location_directive.get_full_directive())
                 signature_builder.add_flagged(location_directive, config.raw)
 
     return signature_builder.build()

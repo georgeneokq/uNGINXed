@@ -23,8 +23,23 @@ class Directive:
     args: list[str] = field(default_factory=list)
     block: list[Self] = field(default_factory=list)
 
-    def get_full_directive(self):
+    def get_full_directive(self) -> str:
+        """
+        Get a directive along with its arguments.
+
+        Returns:
+            A string containing the directive and its arguments
+        """
         return ' '.join([self.directive, *self.args])
+
+    def get_full_args(self) -> str:
+        """
+        Get a directive's arguments, joined into one string
+
+        Returns:
+            str -> A string containing the directive's arguments
+        """
+        return ' '.join(self.args)
 
 
 class DirectiveUtil:
