@@ -136,7 +136,7 @@ def _generate_xhtml(config: NginxConfig, signature_results: list[Signature]):
 
     # Color for comments
     # NOTE: Currently assumes # always indicates the start of a comment.
-    #        If # is used in href during ereprocessing, the report will break
+    #        If # is used in href during preprocessing, the report will break
     configuration_overview = re.sub(r'(#.*$)', r'<span class="comment">\g<1></span>', configuration_overview, 0, re.MULTILINE)
 
     directives_set = DirectiveUtil.get_directives_set(config.directives)
