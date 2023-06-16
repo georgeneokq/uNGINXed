@@ -112,9 +112,8 @@ def _generate_xhtml(config: NginxConfig, signature_results: list[Signature]):
     for signature in signature_results:
         for flagged in signature.flagged:
             flagged_directive = flagged["directive"]
-
-            # NOTE: Might pose a problem if the directive contains chars with special meaning
-            pattern = '({})'.format(r'\s+'.join(flagged_directive.split(' ')))
+            
+            pattern = '({})'.format(r'\s+'.join([re.escape(directive_token) for directive_token in flagged_directive.split(' ')]))
 
             # Prevent duplicate processing of same directive
             if pattern not in processed_set:
@@ -133,7 +132,7 @@ def _generate_xhtml(config: NginxConfig, signature_results: list[Signature]):
 
     # Color for comments
     # NOTE: Currently assumes # always indicates the start of a comment.
-    #        If # is used in href during ereprocessing, the report will break
+    #        If # is used in href during preprocessing, the report will break
     configuration_overview = re.sub(r'(#.*$)', r'<span class="comment">\g<1></span>', configuration_overview, 0, re.MULTILINE)
 
     directives_set = DirectiveUtil.get_directives_set(config.directives)

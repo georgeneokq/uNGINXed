@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from importlib import import_module
 from os import listdir, path
 from pathlib import Path
@@ -17,19 +17,19 @@ class Flagged(TypedDict):
 
 @dataclass
 class Signature:
-    name: str
-    flagged: list[Flagged]
-    reference_url: str
-    description: str
+    name: str = ''
+    flagged: list[Flagged] = field(default_factory=list)
+    reference_url: str = ''
+    description: str = ''
 
 
 class SignatureBuilder:
     """
     Builder class that simplifies creation of a Signature object.
     """
-    def __init__(self, config=None, name='', flagged=[], reference_url='', description=''):
+    def __init__(self, config=None):
         self.config = config
-        self.signature = Signature(name, flagged, reference_url, description)
+        self.signature = Signature()
 
     def build(self) -> Signature:
         """
@@ -95,7 +95,7 @@ class SignatureBuilder:
         return self
 
 
-def get_signatures(signatures_folder=None) -> list[Callable[[list[Directive]], None]]:
+def get_signatures(signatures_folder=None) -> list[Callable[[list[Directive]], Signature]]:
     """
     Retrieves a list of signatures.
     Each signature should be a python file in the specified signatures folder,

@@ -70,11 +70,10 @@ class NginxConfigUtil:
         Returns:
             tuple[int, int]: Start and end index of the directive, one-indexed
         """
-        # Split the directive and arguments by spaces
-        args = directive.split(' ')
 
         # Form a regex string to handle irregular number of spaces
-        pattern = '\\s+'.join(args)
+        args = directive.split(' ')
+        pattern = r'\s+'.join([re.escape(arg) for arg in args])
 
         # Given a line number, jump to that line in the directive and search
         lines = config.splitlines()
