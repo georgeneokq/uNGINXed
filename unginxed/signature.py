@@ -95,7 +95,7 @@ class SignatureBuilder:
         return self
 
 
-def get_signatures(signatures_folder=None) -> list[Callable[[list[Directive]], None]]:
+def get_signatures(signatures_folder=None) -> list[Callable[[list[Directive]], Signature]]:
     """
     Retrieves a list of signatures.
     Each signature should be a python file in the specified signatures folder,
