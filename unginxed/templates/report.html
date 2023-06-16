@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>uNGINXed report</title>
+        <style>
+            {{pdf_styles}}
+
+            body, pre {
+                font-family: Arial;
+                font-size: 14px;
+            }
+
+            .cover-title {
+                font-size: 40px;
+                font-weight: 700;
+            }
+
+            .cover-sub-title {
+                font-size: 28px;
+                font-weight: 500;
+            }
+
+            .center {
+                text-align: center;
+            }
+
+            .header {
+                text-align: center;
+                border-bottom-width: 1px;
+                border-bottom-color: black;
+                border-bottom-style: solid;
+            }
+
+            .curly-brace {
+                color: #deaa1d;
+            }
+
+            .comment {
+                color: #109e48;
+            }
+
+            .directive {
+                color: blue;
+            }
+
+            .flagged {
+                color: #e80514;
+                text-decoration: underline;
+            }
+
+            td {
+                text-align: center;
+                word-wrap: break-word;
+            }
+
+            .table-anchor {
+                display: inline-block;
+            }
+
+            .line-number {
+                text-align: right;
+                font-style: italic;
+                color: gray;
+                margin-right: 15px;
+                width: 1%;
+            }
+
+            .config-content {
+                text-align: left;
+                white-space: pre;
+            }
+
+            .config-overview-table {
+                display: block;
+                width: 100%;
+            }
+
+            .config-overview-table tbody {
+                background-color: blue;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="footer_content" align="right">Page
+        <pdf:pagenumber/>
+        of
+        <pdf:pagecount />
+        </div>
+
+        <div class="center">
+            <h1 class="cover-title">uNGINXed</h1>
+            <img src="{{logo_url}}" alt="NGINX" width="200" height="200" />
+            <p class="cover-sub-title">Misconfiguration Report</p>
+        </div>
+
+        <pdf:nextpage />
+
+        <div>
+            <h1 class="header">Table Of Contents</h1>
+            <pdf:toc />
+        </div>
+
+        <pdf:nextpage />
+
+        <div>
+            <h1 class="header">Signatures</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Reference</th>
+                        <th>Lines</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for signature in signatures %}
+                    <tr>
+                        <td>{{signature.name}}</td>
+                        <td>{{signature.description}}</td>
+                        <td><a class="table-anchor" href="{{signature.reference_url}}">Read More</a></td>
+                        <td>{{signature.flagged | map(attribute='line') | join(', ')}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <pdf:nextpage />
+
+        <div>
+            <h1 class="header">Configuration Overview</h1>
+            <table class="config-overview-table">
+                <tbody>
+                    {% for line in config.raw.splitlines() %}
+                    <!-- Do coloring next -->
+                    <tr>
+                        <td class="line-number">{{loop.index}}</td>
+                        <td class="config-content">{{process_config_line(line, loop.index) | safe}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
