@@ -26,6 +26,7 @@ class Directive:
     """
     directive: str = None
     line: int = None
+    parent: Self = None
     args: list[str] = field(default_factory=list)
     block: list[Self] = field(default_factory=list)
 
@@ -126,6 +127,7 @@ class DirectiveUtil:
         if directive_dict.get("block") is not None:
             for sub_directive_dict in directive_dict.get("block"):
                 sub_directive = Directive()
+                sub_directive.parent = directive
                 DirectiveUtil.recursive_initialize_directives(
                     sub_directive,
                     sub_directive_dict
