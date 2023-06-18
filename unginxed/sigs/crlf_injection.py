@@ -5,7 +5,7 @@ from ..signature import Signature, SignatureBuilder
 
 def matcher(config: NginxConfig) -> Signature:
     crlf_indicators = ['$uri', '$document_uri']
-    signature_builder = SignatureBuilder(config.raw).set_name('CRLF injection') \
+    signature_builder = SignatureBuilder(config.raw).set_name('CRLF Injection') \
                                           .set_reference_url('https://www.acunetix.com/vulnerabilities/web/crlf-injection-http-response-splitting-web-server/') \
                                           .set_description('Improper usage of normalized URI variables $uri and $document_uri could allow an attacker to perform cross site scripting.')
 

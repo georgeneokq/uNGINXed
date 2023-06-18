@@ -4,7 +4,7 @@ from ..signature import Signature, SignatureBuilder
 
 
 def matcher(config: NginxConfig) -> Signature:
-    signature_builder = SignatureBuilder(config.raw).set_name('host spoofing') \
+    signature_builder = SignatureBuilder(config.raw).set_name('Host Spoofing') \
                                           .set_reference_url('https://github.com/yandex/gixy/blob/master/docs/en/plugins/hostspoofing.md') \
                                           .set_description('Usage of $http_host instead of $host may lead to unexpected behaviour (such as phishing and SSRF) due to order of precedence')
 

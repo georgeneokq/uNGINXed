@@ -13,7 +13,7 @@ def _uses_vars(arg: str) -> bool:
 
 
 def matcher(config: NginxConfig) -> Signature:
-    signature_builder = SignatureBuilder(config.raw).set_name('ssrf') \
+    signature_builder = SignatureBuilder(config.raw).set_name('SSRF') \
                                           .set_reference_url('https://github.com/yandex/gixy/blob/master/docs/en/plugins/ssrf.md') \
                                           .set_description('Possible SSRF due to attacker controlled parameters to proxy_pass, without restrictions(internal)')
 

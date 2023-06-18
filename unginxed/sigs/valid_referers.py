@@ -4,7 +4,7 @@ from ..signature import Signature, SignatureBuilder
 
 
 def matcher(config: NginxConfig) -> Signature:
-    signature_builder = SignatureBuilder(config.raw).set_name('valid referers') \
+    signature_builder = SignatureBuilder(config.raw).set_name('Valid Referers') \
                                           .set_reference_url('https://github.com/yandex/gixy/blob/master/docs/en/plugins/validreferers.md') \
                                           .set_description('none is an allowed referer amongst other filtered referers')
 
