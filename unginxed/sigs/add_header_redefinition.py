@@ -1,4 +1,4 @@
-from ..directive import DirectiveUtil, Directive
+from ..directive import DirectiveUtil
 from ..nginx_config import NginxConfig
 from ..signature import Signature, SignatureBuilder
 
