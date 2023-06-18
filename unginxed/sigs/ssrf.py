@@ -25,14 +25,12 @@ def matcher(config: NginxConfig) -> Signature:
             continue
         # case of proxy pass without internal and location has regex
         proxy_pass = [directive for directive in blocks if directive.directive == 'proxy_pass']
-        if not proxy_pass:
-            continue
         location_arg = location_directive.get_full_args()
         for pp_arg in proxy_pass[0].args:
-            if _uses_regex(location_arg) and _uses_vars(pp_arg):
+            if proxy_pass and _uses_regex(location_arg) and _uses_vars(pp_arg):
                 signature_builder.add_flagged(location_directive, config.raw)
             # case of proxy pass with variable without internal
-            elif not _uses_regex(location_arg) and _uses_vars(pp_arg):
+            elif proxy_pass and not _uses_regex(location_arg) and _uses_vars(pp_arg):
                 signature_builder.add_flagged(proxy_pass[0], config.raw)
 
 
