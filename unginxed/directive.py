@@ -1,5 +1,11 @@
 from dataclasses import dataclass, field
-from typing import Callable, Self, TypedDict
+import sys
+# add support for python<3.11
+if sys.version_info >= (3,11):
+    from typing import Callable, Self, TypedDict
+else:
+    from typing import Callable, TypedDict
+    from typing_extensions import Self
 
 
 class DirectiveDict(TypedDict):

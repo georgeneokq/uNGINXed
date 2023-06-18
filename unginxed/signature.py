@@ -2,7 +2,13 @@ from dataclasses import dataclass, field
 from importlib import import_module
 from os import listdir, path
 from pathlib import Path
-from typing import Callable, Optional, Self, TypedDict
+import sys
+# add support for python<3.11
+if sys.version_info >= (3,11):
+    from typing import Callable, Optional, Self, TypedDict
+else:
+    from typing import Callable, Optional, TypedDict
+    from typing_extensions import Self
 
 from .directive import Directive
 from .nginx_config import NginxConfigUtil
