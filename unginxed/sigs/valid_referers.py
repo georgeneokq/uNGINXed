@@ -9,7 +9,6 @@ def matcher(config: NginxConfig) -> Signature:
                                           .set_description('none is an allowed referer amongst other filtered referers')
 
     referers_directives = DirectiveUtil.get_directives('valid_referers', config.directives)
-    print(referers_directives)
     for directive in referers_directives:
         if len(directive.args) > 1 and 'none' in directive.args:
             signature_builder.add_flagged(directive, config.raw)
