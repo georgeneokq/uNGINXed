@@ -4,7 +4,7 @@ from os import listdir, path
 from pathlib import Path
 import sys
 # add support for python<3.11
-if sys.version_info >= (3,11):
+if sys.version_info >= (3, 11):
     from typing import Callable, Optional, Self, TypedDict
 else:
     from typing import Callable, Optional, TypedDict
@@ -18,7 +18,7 @@ class Flagged(TypedDict):
     line: int
     column_start: int
     column_end: int
-    directive: str
+    directive_and_args: list[str]
 
 
 @dataclass
@@ -78,14 +78,14 @@ class SignatureBuilder:
         """
         _config = config if config else self.config
 
-        directive_and_args = f'{directive.directive} {" ".join(directive.args)}'.rstrip()
+        directive_and_args = [directive.directive, *directive.args]
 
         # If no config is passed, unable to pinpoint location of the directive
         if _config:
             [column_start, column_end] = NginxConfigUtil.get_directive_position(_config, directive_and_args, directive.line)
 
         self.signature.flagged.append({
-            "directive": directive_and_args,
+            "directive_and_args": directive_and_args,
             "line": directive.line,
             "column_start": column_start,
             "column_end": column_end

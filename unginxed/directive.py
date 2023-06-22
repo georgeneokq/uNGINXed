@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 import sys
 # add support for python<3.11
-if sys.version_info >= (3,11):
+if sys.version_info >= (3, 11):
     from typing import Callable, Self, TypedDict
 else:
     from typing import Callable, TypedDict

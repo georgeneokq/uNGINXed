@@ -183,7 +183,6 @@
             <table class="config-overview-table">
                 <tbody>
                     {% for line in config.raw.splitlines() %}
-                    <!-- Do coloring next -->
                     <tr>
                         <td class="line-number">{{loop.index}}</td>
                         <td class="config-content">{{process_config_line(line, loop.index) | safe}}</td>
