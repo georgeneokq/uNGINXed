@@ -63,10 +63,14 @@ def generate_pdf_report(config: NginxConfig, signature_results: list[Signature],
 
         Args:
             line (str): A line of NGINX configuration
+            line_number (int): zero-indexed line number
 
         Returns:
             str: HTML string to be used in the template. Can be marked as safe
         """
+        if len(line.strip()) == 0:
+            return ''
+
         # Red text and link for flagged directives
         line_to_signature_mapping = SignatureUtil.get_line_to_signature_mapping(signature_results)
         line_to_flagged_mapping = SignatureUtil.get_line_to_flagged_mapping(signature_results) 
@@ -75,10 +79,49 @@ def generate_pdf_report(config: NginxConfig, signature_results: list[Signature],
 
         if flagged is not None and signature is not None:
             # Form a regex pattern to inject "flagged" css
-            pattern = '(' + r'\s+'.join([re.escape(directive_token) for directive_token in flagged["directive"].split(' ')]) + ')'
-            modified_line = re.sub(pattern, r'<a href="{}" class="flagged">\g<1></a>'.format(signature.reference_url), line, count=1)
+            pattern = r'([^\s]*)' + '(' + re.escape(line.strip()) + ')'
+            modified_line = re.sub(pattern, r'\g<1><a href="{}" class="flagged">\g<2></a>'.format(signature.reference_url), line, count=1)
         else:
-            modified_line = re.sub(r'^(\s*)([a-z_]+)', r'\g<1><span class="directive">\g<2></span>', line, count=1)
+            # If first attempt on retrieving flagged directive by line number fails,
+            # try to perform a regex search from nearest flagged line number.
+            # The current line may be a continuation of the previous line
+            # TODO: Check that a directive has been fully output to the report,
+            #       for optimization
+
+            # Copy line_to_flagged_mapping and sort it in ascending order
+            flagged_lines_sorted = list(line_to_flagged_mapping.keys())
+            flagged_lines_sorted.sort(reverse=True)
+
+            # Iterate through the list from end to start, until we get a
+            # line number smaller than the current line number
+            previously_flagged_line_number = -1
+
+            for i in range(len(flagged_lines_sorted)):
+                flagged_line_number = flagged_lines_sorted[i]
+                if flagged_line_number < line_number:
+                    previously_flagged_line_number = flagged_line_number
+                    break
+
+            # If previously_flagged_line_number > -1, get substring from
+            # that previously flagged line until the next semicolon
+            if previously_flagged_line_number > -1:
+                lines = config.raw.splitlines()
+                # Match until ; or {
+                subconfig = re.match(r'^.+?[\{;]', '\n'.join(lines[previously_flagged_line_number-1:]), re.DOTALL).group()
+
+                # Check for overlap between the current line and the subconfig
+                pattern = re.compile(r'([^\s]*)' + '(' + re.escape(line.strip()) + ')')
+                match = pattern.search(subconfig)
+                if match:
+                    # Inject "flagged" CSS
+                    signature = line_to_signature_mapping.get(previously_flagged_line_number)
+                    modified_line = re.sub(pattern, r'\g<1><a href="{}" class="flagged">\g<2></a>'.format(signature.reference_url), line, count=1)
+                else:
+                    # This line is a start of a directive, not a continuation
+                    modified_line = re.sub(r'^(\s*)([a-z_]+)', r'\g<1><span class="directive">\g<2></span>', line, count=1)
+            else:
+                # This line is a start of a directive, not a continuation
+                modified_line = re.sub(r'^(\s*)([a-z_]+)', r'\g<1><span class="directive">\g<2></span>', line, count=1)
 
         # Use regex to color comments (everything after a hash #)
         modified_line = re.sub(r'(#.*)', r'<span class="comment">\g<1></span>', modified_line)
