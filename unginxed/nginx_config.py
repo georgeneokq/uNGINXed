@@ -50,8 +50,8 @@ class NginxConfig:
 class NginxConfigUtil:
     @staticmethod
     def get_directive_position(config: str,
-                               directive: str,
-                               line_number: Optional[int]) -> tuple[int, int]:
+                               directive_and_args: list[str],
+                               line_number: int) -> tuple[int, int]:
         """
         Given a directive along with its line number, get the
         start column index and end column index. The retrieved position
@@ -71,21 +71,14 @@ class NginxConfigUtil:
             tuple[int, int]: Start and end index of the directive, one-indexed
         """
 
-        # Form a regex string to handle irregular number of spaces
-        args = directive.split(' ')
-        pattern = r'\s+'.join([re.escape(arg) for arg in args])
+        # Form a regex string to handle irregular number of spaces / newline.
+        # Also account for quotes around each arg.
+        pattern = r'\s+'.join(['[\'\"]?{}[\'\"]?'.format(re.escape(arg)) for arg in directive_and_args])
 
-        # Given a line number, jump to that line in the directive and search
-        lines = config.splitlines()
-        if line_number:
-            line = lines[line_number - 1]
-            match = re.search(pattern, line)
-        else:
-            # If no line number given, do a search line by line
-            for line in lines:
-                match = re.search(pattern, line)
-                if match:
-                    break
+        # Using the specified line, create a substring that starts from that line.
+        # The directive being searched for could span multiple lines.
+        config_trimmed = '\n'.join(config.splitlines()[line_number-1:])
+        match = re.search(pattern, config_trimmed)
 
         if match:
             [start_index, end_index] = match.span()
