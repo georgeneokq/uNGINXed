@@ -27,6 +27,7 @@ class Signature:
     flagged: list[Flagged] = field(default_factory=list)
     reference_url: str = ''
     description: str = ''
+    colour: str = ''
 
 
 class SignatureBuilder:
@@ -98,6 +99,15 @@ class SignatureBuilder:
 
     def set_description(self, description: str):
         self.signature.description = description
+        return self
+
+    def set_severity(self, severity: int = 3):
+        if severity == 3:
+            self.signature.colour = 'alert'
+        elif severity == 2:
+            self.signature.colour = 'warning'
+        else:
+            self.signature.colour = 'notice'
         return self
 
 
