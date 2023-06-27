@@ -4,6 +4,24 @@ A tool that generates reports about misconfigurations in specified NGINX configu
 
 The reports may be in JSON format or PDF.
 
+
+## Installation Guide
+
+Follow [Poetry installation Guide](https://python-poetry.org/docs/)
+
+Installing uNGINXed Dependencies
+```
+poetry install
+```
+
+## unNGINXed Usage
+
+```
+poetry run python unginxed <NGINX Configuration Path>
+```
+
+## Development for uNGINXed
+
 ## Adding signatures
 
 Signatures come in the form of python code.
