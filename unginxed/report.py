@@ -80,7 +80,7 @@ def generate_pdf_report(config: NginxConfig, signature_results: list[Signature],
         if flagged is not None and signature is not None:
             # Form a regex pattern to inject "flagged" css
             pattern = r'([^\s]*)' + '(' + re.escape(line.strip()) + ')'
-            modified_line = re.sub(pattern, r'\g<1><a href="{}" class="{}">\g<2></a>'.format(signature.reference_url, signature.colour), line, count=1)
+            modified_line = re.sub(pattern, r'\g<1><a href="{}" class="{}">\g<2></a>'.format(signature.reference_url, signature.severity.name.lower()), line, count=1)
         else:
             # If first attempt on retrieving flagged directive by line number fails,
             # try to perform a regex search from nearest flagged line number.
@@ -115,7 +115,7 @@ def generate_pdf_report(config: NginxConfig, signature_results: list[Signature],
                 if match:
                     # Inject "flagged" CSS
                     signature = line_to_signature_mapping.get(previously_flagged_line_number)
-                    modified_line = re.sub(pattern, r'\g<1><a href="{}" class="{}">\g<2></a>'.format(signature.reference_url, signature.colour), line, count=1)
+                    modified_line = re.sub(pattern, r'\g<1><a href="{}" class="{}">\g<2></a>'.format(signature.reference_url, signature.severity.name.lower()), line, count=1)
                 else:
                     # This line is a start of a directive, not a continuation
                     modified_line = re.sub(r'^(\s*)([a-z_]+)', r'\g<1><span class="directive">\g<2></span>', line, count=1)
