@@ -23,7 +23,7 @@ UNGINXED_LOGO = """
 
 def report_summary_cli(signature_results: list[Signature]):
     for result in signature_results:
-        table = Table(title="Signature for {}\n{}".format(result.name, result.description), caption="Reference URL: {}".format(result.reference_url))
+        table = Table(title="Signature for {}\n{}".format(result.name, result.description), caption="Reference URL: {}".format(result.reference_url), min_width=100)
         table.add_column("Line Number", justify="right", style="cyan", no_wrap=True)
         table.add_column("Directive and Argument", style="magenta")
         table.add_column("Column Start", justify="right", style="green")
