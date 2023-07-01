@@ -278,6 +278,10 @@ def report_verbose_cli(config: NginxConfig, signature_results: list[Signature]):
         )
 
         return modified_line or f"[white]{line}[/white]"
+    
+    table = Table(title=f"{config.filepath}", caption=f"Filepath: {config.filepath}")
+    table.add_column("Line No.", style="cyan", no_wrap=True)
+    table.add_column("Configuration File", style="magenta")
 
     console = Console()
     # read file line by line
@@ -285,4 +289,7 @@ def report_verbose_cli(config: NginxConfig, signature_results: list[Signature]):
         lines = f.readlines()
         for line_num, line in enumerate(lines, 1):
             line_out = process_config_line(line, line_num)
-            console.print(f"[dim] {line_num} [/dim] {line_out}")
+            #console.print(f"[dim] {line_num} [/dim] {line_out}")
+            table.add_row(f"[dim] {line_num} [/dim]", f"{line_out}")
+
+    console.print(table)
