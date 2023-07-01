@@ -4,7 +4,7 @@ from rich import print as rprint
 
 from .nginx_config import NginxConfig
 from .report import generate_pdf_report, report_summary_cli, report_verbose_cli
-from .signature import get_signatures, Signature, SignatureUtil
+from .signature import get_signatures
 
 
 UNGINXED_VERSION = "0.1.1"
@@ -32,7 +32,7 @@ def main():
         "-v",
         "--version",
         action="version",
-        version="READY TO BE uNGINXed? This is version {0}".format(UNGINXED_VERSION),
+        version=f"READY TO BE uNGINXed? This is version {UNGINXED_VERSION}",
     )
     argument_parser.add_argument(
         "-o",
@@ -75,20 +75,18 @@ def main():
         rprint("No misconfigurations found. You are safe FOR NOW!\n\n")
     else:
         rprint(
-            "You have been NGINXED! {} directive flagged in your configuration\n\n".format(
-                total_flagged
-            )
-        )
+            f"You have been NGINXED! {total_flagged} directive flagged in your configuration\n\n")
 
     if args.summary:
         report_summary_cli(results)
-        
+
     if args.verbose:
         report_verbose_cli(config, results)
 
     if report_path:
         report_path = Path(report_path)
-        rprint(f"Jinxed with bad luck? :thumbs_down:\nCheck your NGINX report at: [link=file://{str(report_path)}] {str(report_path)} [/link]")
+        rprint(
+            f"Jinxed with bad luck? :thumbs_down:\nCheck your NGINX report at: [link=file://{str(report_path)}] {str(report_path)} [/link]")
         # Print the clickable URL
 
 
