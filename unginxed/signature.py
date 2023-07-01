@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from importlib import import_module
 from os import listdir, path
 from pathlib import Path
+from enum import Enum
 import sys
 # add support for python<3.11
 if sys.version_info >= (3, 11):
@@ -20,6 +21,10 @@ class Flagged(TypedDict):
     column_end: int
     directive_and_args: list[str]
 
+class Severity(Enum):
+    GREEN=1
+    ORANGE=2
+    RED=3
 
 @dataclass
 class Signature:
@@ -27,6 +32,8 @@ class Signature:
     flagged: list[Flagged] = field(default_factory=list)
     reference_url: str = ''
     description: str = ''
+    severity: Severity = Severity.GREEN
+
 
 
 class SignatureBuilder:
@@ -98,6 +105,10 @@ class SignatureBuilder:
 
     def set_description(self, description: str):
         self.signature.description = description
+        return self
+
+    def set_severity(self, severity: int = 3):
+        self.signature.severity = Severity(severity)
         return self
 
 

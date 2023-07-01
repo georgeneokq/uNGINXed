@@ -8,7 +8,8 @@ def matcher(config: NginxConfig) -> Signature:
     crlf_indicators = ['$uri', '$document_uri']
     signature_builder = SignatureBuilder(config.raw).set_name('CRLF Injection') \
                                           .set_reference_url('https://www.acunetix.com/vulnerabilities/web/crlf-injection-http-response-splitting-web-server/') \
-                                          .set_description('Improper usage of normalized URI variables $uri and $document_uri could allow an attacker to perform cross site scripting.')
+                                          .set_description('Improper usage of normalized URI variables $uri and $document_uri could allow an attacker to perform cross site scripting.') \
+                                          .set_severity(3)
 
     return_directives = [return_directive for directive in crlf_directives for return_directive in DirectiveUtil.get_directives(directive, config.directives)]
 

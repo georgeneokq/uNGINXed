@@ -6,7 +6,8 @@ from ..signature import Signature, SignatureBuilder
 def matcher(config: NginxConfig) -> Signature:
     signature_builder = SignatureBuilder(config.raw).set_name('Alias traversal') \
                                           .set_reference_url('https://www.acunetix.com/vulnerabilities/web/path-traversal-via-misconfigured-nginx-alias/') \
-                                          .set_description('Location for aliases not ending with a / could allow an attacker to read file stored outside the target folder.')
+                                          .set_description('Location for aliases not ending with a / could allow an attacker to read file stored outside the target folder.') \
+                                          .set_severity(3)
 
     location_directives = DirectiveUtil.get_directives('location', config.directives)
 
