@@ -11,7 +11,6 @@ def matcher(config: NginxConfig) -> Signature:
     hide_headers_directive = DirectiveUtil.get_directives('proxy_hide_header', config.directives)
     for directive in hide_headers_directive:
         sub_directives = [sub_directive.directive for sub_directive in directive.parent.block]
-        print(sub_directives)
         if 'proxy_intercept_errors' in sub_directives:
             signature_builder.add_flagged(directive, config.raw)
 
