@@ -86,7 +86,7 @@ def main():
     if report_path:
         report_path = Path(report_path)
         rprint(
-            f"Jinxed with bad luck? :thumbs_down:\nCheck your NGINX report at: [link=file://{str(report_path)}] {str(report_path)} [/link]")
+            f"Jinxed with bad luck? :thumbs_down:\nCheck your full uNGINXed report at: [link=file://{str(report_path)}] {str(report_path)} [/link]")
         # Print the clickable URL
 
 
