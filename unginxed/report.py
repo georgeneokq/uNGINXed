@@ -289,7 +289,6 @@ def report_verbose_cli(config: NginxConfig, signature_results: list[Signature]):
         lines = f.readlines()
         for line_num, line in enumerate(lines, 1):
             line_out = process_config_line(line, line_num)
-            #console.print(f"[dim] {line_num} [/dim] {line_out}")
             table.add_row(f"[dim] {line_num} [/dim]", f"{line_out}")
 
     console.print(table)
