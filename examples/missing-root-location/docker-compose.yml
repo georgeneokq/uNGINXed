@@ -1,0 +1,17 @@
+version: '2.1'
+services:
+  nginx:
+    build: nginx
+#    image: lmao
+    command: nginx -g "daemon off;"
+    container_name: app_nginx
+    depends_on:
+      - apache
+    ports:
+      - "80:80"
+  apache:
+#    image: asdf
+    build: apache
+    container_name: app_apache
+    #ports:
+    #  - "5001:80"
