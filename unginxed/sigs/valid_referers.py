@@ -6,7 +6,8 @@ from ..signature import Signature, SignatureBuilder
 def matcher(config: NginxConfig) -> Signature:
     signature_builder = SignatureBuilder(config.raw).set_name('Valid Referers') \
                                           .set_reference_url('https://github.com/yandex/gixy/blob/master/docs/en/plugins/validreferers.md') \
-                                          .set_description('none is an allowed referer amongst other filtered referers')
+                                          .set_description('none is an allowed referer amongst other filtered referers') \
+                                          .set_severity(1)
 
     referers_directives = DirectiveUtil.get_directives('valid_referers', config.directives)
     for directive in referers_directives:

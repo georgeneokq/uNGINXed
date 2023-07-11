@@ -6,7 +6,8 @@ from ..signature import Signature, SignatureBuilder
 def matcher(config: NginxConfig) -> Signature:
     signature_builder = SignatureBuilder(config.raw).set_name('Missing Default Value for map Directive') \
                                           .set_reference_url('https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/nginx') \
-                                          .set_description('If map is used for authorisation, not including a default value can lead to unexpected behaviour.')
+                                          .set_description('If map is used for authorisation, not including a default value can lead to unexpected behaviour.') \
+                                          .set_severity(1)
 
     return_directives = DirectiveUtil.get_directives('map', config.directives)
     for return_directive in return_directives:
