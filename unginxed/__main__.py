@@ -37,7 +37,6 @@ def main():
     argument_parser.add_argument(
         "-o",
         "--pdf-output",
-        default="reports",
         type=str,
         help="Optional PDF report output directory",
     )
@@ -64,10 +63,7 @@ def main():
     signatures = get_signatures()
 
     results = [signature(config) for signature in signatures]
-    if pdf_output_path is not None:
-        report_path = generate_pdf_report(
-            config, results, output_folder=pdf_output_path
-        )
+    report_path = generate_pdf_report(config, results, output_folder=pdf_output_path) if pdf_output_path is not None else None
 
     total_flagged = sum(len(result.flagged) for result in results)
 
