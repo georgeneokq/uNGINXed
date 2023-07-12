@@ -167,9 +167,9 @@ def report_summary_cli(signature_results: list[Signature]):
                     str(misconfig.get("column_start")),
                     str(misconfig.get("column_end")),
                 )
-                console = Console()
-                console.print(table)
-                print("\n")
+            console = Console()
+            console.print(table)
+            console.print('')
 
 
 def report_verbose_cli(config: NginxConfig, signature_results: list[Signature]):

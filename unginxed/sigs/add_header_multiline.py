@@ -16,7 +16,6 @@ def matcher(config: NginxConfig) -> Signature:
         if directive.directive == 'add_header':
             if '\n' in directive.get_full_args():
                 signature_builder.add_flagged(directive, config.raw)
-                print(directive.get_full_args())
         
         if directive.directive == "more_set_headers":
             for arg in directive.args:
