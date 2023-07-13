@@ -15,7 +15,7 @@ UNGINXED_LOGO = """
  | | | | . ` | | |_ | | | | . ` | > < / _ \/ _` |
  | |_| | |\  | |__| |_| |_| |\  |/ . \  __/ (_| |
   \__,_|_| \_|\_____|_____|_| \_/_/ \_\___|\__,_| 
-
+A static vulnerability scanner for NGINX Configuration
           """
 
 
