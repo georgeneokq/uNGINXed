@@ -17,7 +17,7 @@ poetry install
 ## unNGINXed Usage
 
 ```
-poetry run python unginxed <NGINX Configuration Path>
+poetry run python -m unginxed <NGINX Configuration Path>
 ```
 
 ## Development for uNGINXed
