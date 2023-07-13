@@ -12,6 +12,8 @@ def matcher(config: NginxConfig) -> Signature:
                                           .set_severity(1)
     add_header_directives = DirectiveUtil.get_directives('add_header', config.directives)
     for directive in add_header_directives:
+        if not directive.parent.parent:
+            continue
         temp = [d for d in directive.parent.parent.block if d.directive == 'add_header']
         if temp:
             signature_builder.add_flagged(directive, config.raw)
