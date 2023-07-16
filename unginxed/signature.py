@@ -23,7 +23,7 @@ class Flagged(TypedDict):
 
 class Severity(Enum):
     GREEN=1
-    ORANGE=2
+    ORANGE1=2
     RED=3
 
 @dataclass

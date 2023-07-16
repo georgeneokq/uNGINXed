@@ -5,6 +5,7 @@ from os import path
 from pathlib import Path
 from rich.console import Console
 from rich.table import Table
+from rich.text import Text
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from xhtml2pdf import pisa
@@ -172,13 +173,17 @@ def report_summary_cli(signature_results: list[Signature]):
         )
         table.add_column("Line Number", justify="right", style="cyan", no_wrap=True)
         table.add_column("Directive and Argument", style="magenta")
+        table.add_column("Severity", justify="right", style="green")
         table.add_column("Column Start", justify="right", style="green")
         table.add_column("Column End", justify="right", style="green")
         if len(result.flagged) > 0:
             for misconfig in result.flagged:
+                severity = str(result.severity.value)
+                colour = result.severity.name.lower()
                 table.add_row(
                     str(misconfig.get("line")),
                     " ".join(misconfig.get("directive_and_args")),
+                    Text(severity, style=colour),
                     str(misconfig.get("column_start")),
                     str(misconfig.get("column_end")),
                 )
