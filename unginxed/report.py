@@ -108,8 +108,23 @@ def generate_pdf_report(config: NginxConfig, signature_results: list[Signature],
             # that previously flagged line until the next semicolon
             if previously_flagged_line_number > -1:
                 lines = config.raw.splitlines()
-                # Match until ; or {
-                subconfig = re.match(r'^.+?[\{;]', '\n'.join(lines[previously_flagged_line_number-1:]), re.DOTALL).group()
+                flagged_first_line = lines[previously_flagged_line_number - 1]
+                quote_search_result = re.search(r'([\'\"])', flagged_first_line)
+
+                pattern_with_quote = None
+                if quote_search_result:
+                    # Either single quote or double quote
+                    quote_character = quote_search_result.group(1)
+                    pattern_with_quote = f"^.+?{quote_character}\s*[\\{{;]"
+                
+                pattern = pattern_with_quote if pattern_with_quote else r"^.+?[\{;]"
+
+                # Match until { or ; that is not enclosed between quotes
+                subconfig = re.match(
+                    pattern,
+                    "\n".join(lines[previously_flagged_line_number - 1 :]),
+                    re.DOTALL,
+                ).group()
 
                 # Check for overlap between the current line and the subconfig
                 pattern = re.compile(r'([^\s]*)' + '(' + re.escape(line.strip()) + ')')
@@ -234,9 +249,20 @@ def report_verbose_cli(config: NginxConfig, signature_results: list[Signature]):
             # that previously flagged line until the next semicolon
             if previously_flagged_line_number > -1:
                 lines = config.raw.splitlines()
-                # Match until ; or {
+                flagged_first_line = lines[previously_flagged_line_number - 1]
+                quote_search_result = re.search(r'([\'\"])', flagged_first_line)
+
+                pattern_with_quote = None
+                if quote_search_result:
+                    # Either single quote or double quote
+                    quote_character = quote_search_result.group(1)
+                    pattern_with_quote = f"^.+?{quote_character}\s*[\\{{;]"
+                
+                pattern = pattern_with_quote if pattern_with_quote else r"^.+?[\{;]"
+
+                # Match until { or ; that is not enclosed between quotes
                 subconfig = re.match(
-                    r"^.+?[\{;]",
+                    pattern,
                     "\n".join(lines[previously_flagged_line_number - 1 :]),
                     re.DOTALL,
                 ).group()
@@ -278,7 +304,7 @@ def report_verbose_cli(config: NginxConfig, signature_results: list[Signature]):
         )
 
         return modified_line or f"[white]{line}[/white]"
-    
+
     table = Table(title=f"{config.filepath}", caption=f"Filepath: {config.filepath}")
     table.add_column("Line No.", style="cyan", no_wrap=True)
     table.add_column("Configuration File", style="magenta")
