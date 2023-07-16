@@ -22,7 +22,7 @@ class Flagged(TypedDict):
     directive_and_args: list[str]
 
 class Severity(Enum):
-    GREEN=1
+    YELLOW1=1
     ORANGE1=2
     RED=3
 
@@ -32,7 +32,7 @@ class Signature:
     flagged: list[Flagged] = field(default_factory=list)
     reference_url: str = ''
     description: str = ''
-    severity: Severity = Severity.GREEN
+    severity: Severity = Severity.YELLOW1
 
 
 
