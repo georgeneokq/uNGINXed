@@ -1,6 +1,7 @@
 import argparse as ap
 from pathlib import Path
 from rich import print as rprint
+from sys import argv
 
 from .nginx_config import NginxConfig
 from .report import generate_pdf_report, report_summary_cli, report_verbose_cli
@@ -54,6 +55,9 @@ def main():
         action="store_true",
         help="Prints summary report",
     )
+    if len(argv) == 1:
+        argument_parser.print_usage()
+        exit(1)
     args = argument_parser.parse_args()
     filepath = args.file
     pdf_output_path = args.pdf_output
