@@ -44,14 +44,14 @@ def main():
         "-vv",
         "--verbose",
         default="verbose",
-        type=str,
+        action="store_true",
         help="Prints nginx configuration report",
     )
     argument_parser.add_argument(
         "-s",
         "--summary",
         default="summary",
-        type=str,
+        action="store_true",
         help="Prints summary report",
     )
     args = argument_parser.parse_args()
