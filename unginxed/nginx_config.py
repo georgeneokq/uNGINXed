@@ -34,6 +34,8 @@ class NginxConfig:
         self.directives: list[Directive] = []
 
         config: list[DirectiveDict] = crossplane.parse(filepath)["config"][0]["parsed"]
+        if not config:
+            raise RuntimeError('Invalid NGINX config!')
 
         for directive_dict in config:
             directive = Directive()

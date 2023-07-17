@@ -58,7 +58,11 @@ def main():
     filepath = args.file
     pdf_output_path = args.pdf_output
 
-    config = NginxConfig(filepath)
+    try:
+        config = NginxConfig(filepath)
+    except (RuntimeError, IsADirectoryError) :
+        print('Invalid NGINX config given!')
+        return
     print(UNGINXED_LOGO)
     signatures = get_signatures()
 
