@@ -5,6 +5,7 @@ from os import path
 from pathlib import Path
 from rich.console import Console
 from rich.table import Table
+from rich.text import Text
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from xhtml2pdf import pisa
@@ -108,8 +109,23 @@ def generate_pdf_report(config: NginxConfig, signature_results: list[Signature],
             # that previously flagged line until the next semicolon
             if previously_flagged_line_number > -1:
                 lines = config.raw.splitlines()
-                # Match until ; or {
-                subconfig = re.match(r'^.+?[\{;]', '\n'.join(lines[previously_flagged_line_number-1:]), re.DOTALL).group()
+                flagged_first_line = lines[previously_flagged_line_number - 1]
+                quote_search_result = re.search(r'([\'\"])', flagged_first_line)
+
+                pattern_with_quote = None
+                if quote_search_result:
+                    # Either single quote or double quote
+                    quote_character = quote_search_result.group(1)
+                    pattern_with_quote = f"^.+?{quote_character}\s*[\\{{;]"
+                
+                pattern = pattern_with_quote if pattern_with_quote else r"^.+?[\{;]"
+
+                # Match until { or ; that is not enclosed between quotes
+                subconfig = re.match(
+                    pattern,
+                    "\n".join(lines[previously_flagged_line_number - 1 :]),
+                    re.DOTALL,
+                ).group()
 
                 # Check for overlap between the current line and the subconfig
                 pattern = re.compile(r'([^\s]*)' + '(' + re.escape(line.strip()) + ')')
@@ -157,19 +173,23 @@ def report_summary_cli(signature_results: list[Signature]):
         )
         table.add_column("Line Number", justify="right", style="cyan", no_wrap=True)
         table.add_column("Directive and Argument", style="magenta")
+        table.add_column("Severity", justify="right", style="green")
         table.add_column("Column Start", justify="right", style="green")
         table.add_column("Column End", justify="right", style="green")
         if len(result.flagged) > 0:
             for misconfig in result.flagged:
+                severity = str(result.severity.value)
+                colour = result.severity.name.lower()
                 table.add_row(
                     str(misconfig.get("line")),
                     " ".join(misconfig.get("directive_and_args")),
+                    Text(severity, style=colour),
                     str(misconfig.get("column_start")),
                     str(misconfig.get("column_end")),
                 )
-                console = Console()
-                console.print(table)
-                print("\n")
+            console = Console()
+            console.print(table)
+            console.print('')
 
 
 def report_verbose_cli(config: NginxConfig, signature_results: list[Signature]):
@@ -234,9 +254,20 @@ def report_verbose_cli(config: NginxConfig, signature_results: list[Signature]):
             # that previously flagged line until the next semicolon
             if previously_flagged_line_number > -1:
                 lines = config.raw.splitlines()
-                # Match until ; or {
+                flagged_first_line = lines[previously_flagged_line_number - 1]
+                quote_search_result = re.search(r'([\'\"])', flagged_first_line)
+
+                pattern_with_quote = None
+                if quote_search_result:
+                    # Either single quote or double quote
+                    quote_character = quote_search_result.group(1)
+                    pattern_with_quote = f"^.+?{quote_character}\s*[\\{{;]"
+                
+                pattern = pattern_with_quote if pattern_with_quote else r"^.+?[\{;]"
+
+                # Match until { or ; that is not enclosed between quotes
                 subconfig = re.match(
-                    r"^.+?[\{;]",
+                    pattern,
                     "\n".join(lines[previously_flagged_line_number - 1 :]),
                     re.DOTALL,
                 ).group()
@@ -278,7 +309,7 @@ def report_verbose_cli(config: NginxConfig, signature_results: list[Signature]):
         )
 
         return modified_line or f"[white]{line}[/white]"
-    
+
     table = Table(title=f"{config.filepath}", caption=f"Filepath: {config.filepath}")
     table.add_column("Line No.", style="cyan", no_wrap=True)
     table.add_column("Configuration File", style="magenta")
