@@ -91,12 +91,12 @@
             }
 
             .orange1 {
-                color: #ffaf00;
+                color: #ff9100;
                 text-decoration: underline;
             }
 
-            .YELLOW1 {
-                color: #ffff00;
+            .yellow1 {
+                color: #FFD700;
                 text-decoration: underline;
             }
 
@@ -161,6 +161,7 @@
                         <th>Name</th>
                         <th>Description</th>
                         <th>Reference</th>
+                        <th>Severity</th>
                         <th>Lines</th>
                     </tr>
                 </thead>
@@ -170,6 +171,7 @@
                         <td class="center">{{signature.name}}</td>
                         <td class="center">{{signature.description}}</td>
                         <td class="center"><a class="inline-block" href="{{signature.reference_url}}">Read More</a></td>
+                        <td class="center {{signature.severity.name.lower()}}">{{signature.severity.value}}</td>
                         <td class="center">{{signature.flagged | map(attribute='line') | join(', ')}}</td>
                     </tr>
                     {% endfor %}
