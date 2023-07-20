@@ -11,7 +11,14 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from xhtml2pdf import pisa
 
 from .nginx_config import NginxConfig
-from .signature import Signature, SignatureUtil
+from .signature import Signature, SignatureUtil, Severity
+
+
+severity_color_mapping: dict[Severity, str] = {
+    Severity.INFORMATION: 'yellow1',
+    Severity.WARNING: 'orange1',
+    Severity.ERROR: 'red'
+}
 
 
 def generate_pdf_report(config: NginxConfig, signature_results: list[Signature], output_folder='reports') -> str:
@@ -83,7 +90,7 @@ def generate_pdf_report(config: NginxConfig, signature_results: list[Signature],
         if flagged is not None and signature is not None:
             # Form a regex pattern to inject "flagged" css
             pattern = r'([^\s]*)' + '(' + re.escape(line.strip()) + ')'
-            modified_line = re.sub(pattern, r'\g<1><a href="{}" class="{}">\g<2></a>'.format(signature.reference_url, signature.severity.name.lower()), line, count=1)
+            modified_line = re.sub(pattern, r'\g<1><a href="{}" class="{}">\g<2></a>'.format(signature.reference_url, severity_color_mapping[signature.severity]), line, count=1)
         else:
             # If first attempt on retrieving flagged directive by line number fails,
             # try to perform a regex search from nearest flagged line number.
@@ -133,7 +140,7 @@ def generate_pdf_report(config: NginxConfig, signature_results: list[Signature],
                 if match:
                     # Inject "flagged" CSS
                     signature = line_to_signature_mapping.get(previously_flagged_line_number)
-                    modified_line = re.sub(pattern, r'\g<1><a href="{}" class="{}">\g<2></a>'.format(signature.reference_url, signature.severity.name.lower()), line, count=1)
+                    modified_line = re.sub(pattern, r'\g<1><a href="{}" class="{}">\g<2></a>'.format(signature.reference_url, severity_color_mapping[signature.severity]), line, count=1)
                 else:
                     # This line is a start of a directive, not a continuation
                     modified_line = re.sub(r'^(\s*)([a-z_]+)', r'\g<1><span class="directive">\g<2></span>', line, count=1)
@@ -179,7 +186,7 @@ def report_summary_cli(signature_results: list[Signature]):
         if len(result.flagged) > 0:
             for misconfig in result.flagged:
                 severity = str(result.severity.value)
-                colour = result.severity.name.lower()
+                colour = severity_color_mapping[result.severity]
                 table.add_row(
                     str(misconfig.get("line")),
                     " ".join(misconfig.get("directive_and_args")),
@@ -225,7 +232,7 @@ def report_verbose_cli(config: NginxConfig, signature_results: list[Signature]):
             
             modified_line = re.sub(
                 pattern,
-                f'[bold underline {signature.severity.name.lower()}][link={signature.reference_url}]\g<1> \g<2>[/link][/bold underline {signature.severity.name.lower()}]',  
+                f'[bold underline {severity_color_mapping[signature.severity]}][link={signature.reference_url}]\g<1> \g<2>[/link][/bold underline {severity_color_mapping[signature.severity]}]',  
                 line,
                 count=1,
             )
@@ -282,7 +289,7 @@ def report_verbose_cli(config: NginxConfig, signature_results: list[Signature]):
                     )
                     modified_line = re.sub(
                         pattern,
-                        f'[bold underline {signature.severity.name.lower()}][link={ signature.reference_url}]\g<1> \g<2>[/link][/bold underline {signature.severity.name.lower()}]', 
+                        f'[bold underline {severity_color_mapping[signature.severity]}][link={ signature.reference_url}]\g<1> \g<2>[/link][/bold underline {severity_color_mapping[signature.severity]}]', 
                         line,
                         count=1,
                     )
