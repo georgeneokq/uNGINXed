@@ -42,7 +42,7 @@ Use the `tools/sigs.py` tool to create a signature python file which contains bo
 
 Example usage (from `unginxed` folder):
 ```
-python ./tools/sigs.py create Alias LFI
+poetry run python unginxed/tools/sigs.py create Alias LFI
 ```
 
 This creates a file named `alias_lfi.py`, with the following boilerplate code:
