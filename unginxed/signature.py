@@ -21,10 +21,12 @@ class Flagged(TypedDict):
     column_end: int
     directive_and_args: list[str]
 
+
 class Severity(Enum):
-    YELLOW1=1
-    ORANGE1=2
-    RED=3
+    INFORMATION = 1
+    WARNING = 2
+    ERROR = 3
+
 
 @dataclass
 class Signature:
@@ -32,8 +34,7 @@ class Signature:
     flagged: list[Flagged] = field(default_factory=list)
     reference_url: str = ''
     description: str = ''
-    severity: Severity = Severity.YELLOW1
-
+    severity: Severity = Severity.INFORMATION
 
 
 class SignatureBuilder:
