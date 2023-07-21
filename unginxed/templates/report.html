@@ -57,7 +57,7 @@
             
             /* Common classes end */
             
-            /* Context-specific class start */
+            /* Context-specific classes start */
 
             .cover-title {
                 font-size: 40px;
@@ -121,7 +121,12 @@
                 background-color: blue;
             }
 
-            /* Context-specific class end */
+            #signatures tbody tr {
+                padding: 5px 0;
+                border-bottom: 1px solid black;
+            }
+
+            /* Context-specific classes end */
         </style>
     </head>
     <body>
@@ -155,7 +160,7 @@
             <div class="separator">
                 <h1 class="center generate-toc">Signatures</h1>
             </div>
-            <table>
+            <table id="signatures">
                 <thead>
                     <tr>
                         <th>Name</th>
