@@ -16,13 +16,17 @@ poetry install
 
 ## unNGINXed Usage
 
-Command Line
+Command Line Report
 ```
-poetry run python -m unginxed <NGINX Configuration Path>
+poetry run python -m unginxed <NGINX Configuration Path> -sv
 ```
 PDF Report Generation 
 ```
 poetry run python -m unginxed <NGINX Configuration Path> -o reports
+```
+All Report Generation 
+```
+poetry run python -m unginxed <NGINX Configuration Path> -svo reports
 ```
 
 
