@@ -23,7 +23,8 @@ from ..signature import Signature, SignatureBuilder
 def matcher(config: NginxConfig) -> Signature:
     signature_builder = SignatureBuilder(config.raw).set_name('{name}') \\
                                           .set_reference_url('') \\
-                                          .set_description('')
+                                          .set_description('') \\
+                                          .set_severity()
 
     # Your logic here.
     # Flag out directives using signature_builder.add_flagged(directive, config)
