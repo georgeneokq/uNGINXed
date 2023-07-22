@@ -30,7 +30,7 @@ def main():
         "file", type=str, help="Path to NGINX configuration file"
     )
     argument_parser.add_argument(
-        "-v",
+        "-V",
         "--version",
         action="version",
         version=f"READY TO BE uNGINXed? This is version {UNGINXED_VERSION}",
@@ -42,7 +42,7 @@ def main():
         help="Optional PDF report output directory",
     )
     argument_parser.add_argument(
-        "-vv",
+        "-v",
         "--verbose",
         action="store_true",
         help="Prints nginx configuration report",
