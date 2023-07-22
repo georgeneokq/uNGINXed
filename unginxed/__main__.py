@@ -100,7 +100,7 @@ def main():
 Specify either one of the following flags to get started:
 -o/--pdf-output <report_output_folder>: For report generation
 -su/--summary: For printing summary to stdout
--vv/--verbose: For print verbose analysis to stdout
+-v/--verbose: For print verbose analysis to stdout
               '''.strip())
 
     if args.summary:
