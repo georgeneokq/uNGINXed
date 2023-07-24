@@ -77,7 +77,6 @@ def main():
             else:
                 print(*args)
 
-
     # Attempt to parse the config file, exit the program if failed
     try:
         config = NginxConfig(filepath)
@@ -99,7 +98,7 @@ def main():
         _print('''
 Specify either one of the following flags to get started:
 -o/--pdf-output <report_output_folder>: For report generation
--su/--summary: For printing summary to stdout
+-s/--summary: For printing summary to stdout
 -v/--verbose: For print verbose analysis to stdout
               '''.strip())
 
