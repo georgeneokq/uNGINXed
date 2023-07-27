@@ -7,6 +7,8 @@ The reports may be in JSON format or PDF.
 
 ## Installation Guide
 
+The uNGINXed project relies on Poetry to manage Python dependencies. It is highly encouraged to perform all uNGINXed operations within Poetry's environment.
+
 Follow [Poetry installation Guide](https://python-poetry.org/docs/)
 
 Installing uNGINXed Dependencies
@@ -16,17 +18,22 @@ poetry install
 
 ## unNGINXed Usage
 
+The uNGINXed engine support scanning of NGINX configurations from the command line.
+
 Command Line Report
 ```
 poetry run python -m unginxed <NGINX Configuration Path> -sv
 ```
+
+![Command Line Report](images/command-line-report.png)
+
 PDF Report Generation 
 ```
-poetry run python -m unginxed <NGINX Configuration Path> -o reports
+poetry run python -m unginxed <NGINX Configuration Path> -o <output directory>
 ```
-All Report Generation 
+Report Generation With Command Line Report 
 ```
-poetry run python -m unginxed <NGINX Configuration Path> -svo reports
+poetry run python -m unginxed <NGINX Configuration Path> -svo <output directory>
 ```
 
 
