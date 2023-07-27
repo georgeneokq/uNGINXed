@@ -40,7 +40,17 @@ Report Generation With Command Line Report
 ```
 poetry run python -m unginxed <NGINX Configuration Path> -svo <output directory>
 ```
+## uNGINXed integration with VSCode
 
+uNGINXed is available as a linter, implemented as a VSCode extension.
+To use the extension, simply install the `unginxed-linter.vsix` extension in VSCode via the `Install From VSIX` option in VSCode.
+
+![VSCode Linter](images/linter.png)
+
+The linter is able to generate a PDF report via a extension command:
+![PDF command](images/linter-command.png)
+
+<div style="page-break-after: always;"></div>
 
 ## Development for uNGINXed
 
