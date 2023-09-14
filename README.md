@@ -74,3 +74,7 @@ def matcher(config: NginxConfig) -> Signature:
 
     return signature_builder.build()
 ```
+
+#### Credits
+
+This project was originally inspired by [gixy](https://github.com/yandex/gixy)
